@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+	.text-primary {
+		@apply text-green-800;
+	}
+
+	.text-secondary {
+		@apply text-yellow-600;
+	}
+
+	.bg-primary {
+		@apply bg-green-800;
+	}
+
+	.bg-secondary {
+		@apply bg-yellow-600;
+	}
+
+	.center {
+		@apply flex justify-center items-center;
+	}
+}
+
+@layer base {
+	body {
+		@apply font-mono;
+	}
+}
+
+.spinner {
+	animation: rotate 2s linear infinite;
+	z-index: 2;
+	margin: 0;
+	width: 30px;
+	height: 30px;
+}
+
+.spinner > .path {
+	stroke:#b6bfc8;
+	stroke-linecap: round;
+	animation: dash 2s ease-in-out infinite;
+}
+
+@keyframes rotate {
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+@keyframes dash {
+	0% {
+		stroke-dasharray: 1, 150;
+		stroke-dashoffset: 0;
+	}
+	50% {
+		stroke-dasharray: 90, 150;
+		stroke-dashoffset: -25;
+	}
+	100% {
+		stroke-dasharray: 90, 150;
+		stroke-dashoffset: -125;
+	}
+}

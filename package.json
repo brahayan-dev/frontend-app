@@ -1,0 +1,22 @@
+{
+  "name": "frontend-app",
+  "version": "1.0.0",
+  "description": "Elm application",
+  "main": "index.html",
+  "scripts": {
+    "postbuild": "rm -r ./build/out/app",
+    "build": "snowpack build",
+    "serve": "snowpack dev"
+  },
+  "author": "Brahayan Suárez",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@snowpack/plugin-dotenv": "^2.0.5",
+    "@snowpack/plugin-postcss": "^1.1.0",
+    "autoprefixer": "^10.2.4",
+    "postcss-cli": "^8.3.1",
+    "snowpack": "^3.0.11",
+    "snowpack-plugin-elm": "^0.4.2",
+    "tailwindcss": "^2.0.3"
+  }
+}
