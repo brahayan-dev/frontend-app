@@ -11,10 +11,10 @@ import Browser.Navigation exposing (Key)
 import Common.Components.Button as Button
 import Common.Components.Input as Input
 import Common.Components.Link as Link
-import Common.Services.Authorization as AuthService
 import Common.Util as Util
 import Html exposing (Html, section)
 import Html.Events as E
+import Http
 import Router exposing (redirectTo)
 import Store exposing (State)
 import Welcome.Components.Hero as Hero
@@ -47,7 +47,7 @@ init ( key, state ) =
 type Msg
     = ChangeEmail String
     | ChangePassword String
-    | UserAuthorized String
+    | GotUser (Result Http.Error String)
     | GoToSignUp
     | MakeLogin
 
@@ -62,15 +62,12 @@ update msg (Model ({ globalState, navigationKey } as model)) =
             ( Model { model | password = value }, globalState, Cmd.none )
 
         MakeLogin ->
-            let
-                { email, password } =
-                    model
-            in
             ( Model { model | isLoading = True }
             , globalState
-            , { email = email, password = password }
-                |> AuthService.encodeLoginModel
-                |> AuthService.commonAuthorizationServiceSendLogin
+            , Http.get
+                { url = "https://jsonplaceholder.typicode.com/posts/1"
+                , expect = Http.expectString GotUser
+                }
             )
 
         GoToSignUp ->
@@ -79,22 +76,13 @@ update msg (Model ({ globalState, navigationKey } as model)) =
             , redirectTo navigationKey "/register"
             )
 
-        UserAuthorized answer ->
-            let
-                model_ =
-                    { model | isLoading = False }
-            in
-            case AuthService.decoder answer of
-                Err _ ->
-                    ( Model model_, globalState, Cmd.none )
-
-                Ok _ ->
-                    ( Model model, globalState, redirectTo navigationKey "/shop" )
+        GotUser answer ->
+            Debug.log (Debug.toString answer) ( Model model, globalState, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    AuthService.commonAuthorizationServiceReceiveSchema UserAuthorized
+    Sub.none
 
 
 viewForm : Model -> Html Msg
