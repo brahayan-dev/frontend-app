@@ -2,7 +2,7 @@ module App exposing (main)
 
 import Browser exposing (Document, UrlRequest)
 import Browser.Navigation as Navigation
-import Common.Util as Util
+import Common.Core as Core
 import Html exposing (Html, div, h1, text)
 import Html.Attributes exposing (class)
 import Retail.Views.Shop as Shop
@@ -101,15 +101,15 @@ setNewPage maybeRoute ({ globalState, navigationKey } as model) =
     case maybeRoute of
         Just Router.Register ->
             Register.init ( navigationKey, globalState )
-                |> Util.process Register RegisterMsg model
+                |> Core.process Register RegisterMsg model
 
         Just Router.Login ->
             Login.init ( navigationKey, globalState )
-                |> Util.process Login LoginMsg model
+                |> Core.process Login LoginMsg model
 
         Just Router.Shop ->
             Shop.init ( navigationKey, globalState )
-                |> Util.process Shop ShopMsg model
+                |> Core.process Shop ShopMsg model
 
         Just Router.Redirect ->
             ( model, Router.redirectTo navigationKey "/login" )
@@ -129,15 +129,15 @@ update msg ({ navigationKey, element } as model) =
 
         ( LoginMsg loginMsg, Login loginModel ) ->
             Login.update loginMsg loginModel
-                |> Util.process Login LoginMsg model
+                |> Core.process Login LoginMsg model
 
         ( RegisterMsg registerMsg, Register registerModel ) ->
             Register.update registerMsg registerModel
-                |> Util.process Register RegisterMsg model
+                |> Core.process Register RegisterMsg model
 
         ( ShopMsg shopMsg, Shop shopModel ) ->
             Shop.update shopMsg shopModel
-                |> Util.process Shop ShopMsg model
+                |> Core.process Shop ShopMsg model
 
         _ ->
             ( model, Cmd.none )

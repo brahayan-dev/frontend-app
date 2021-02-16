@@ -1,4 +1,4 @@
-module Retail.Templates.Cabinet exposing
+module Retail.Widgets.Cabinet exposing
     ( Cabinet
     , default
     , pickProduct

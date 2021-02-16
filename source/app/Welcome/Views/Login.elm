@@ -11,7 +11,7 @@ import Browser.Navigation exposing (Key)
 import Common.Components.Button as Button
 import Common.Components.Input as Input
 import Common.Components.Link as Link
-import Common.Util as Util
+import Common.Core as Core
 import Html exposing (Html, section)
 import Html.Events as E
 import Http
@@ -98,7 +98,7 @@ viewForm (Model { isLoading }) =
             |> Input.toHtml [ E.onInput ChangePassword ]
         , "Iniciar sesión"
             |> Button.default
-            |> Util.when isLoading Button.setLoading
+            |> Core.when isLoading Button.setLoading
             |> Button.toHtml []
         , "Sign up"
             |> Link.default
