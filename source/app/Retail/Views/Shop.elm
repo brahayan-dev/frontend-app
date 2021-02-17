@@ -4,7 +4,6 @@ import Browser.Navigation exposing (Key)
 import Common.Core as Core
 import Html exposing (Html)
 import Retail.Widgets.Cabinet as Cabinet
-import Retail.Widgets.Drawer as Drawer
 import Router exposing (redirectTo)
 import Store exposing (State)
 
@@ -14,32 +13,23 @@ type Model
         { basket : Int
         , globalState : State
         , navigationKey : Key
-        , drawerModel : Drawer.Model
         }
 
 
 init : ( Key, State ) -> ( Model, State, Cmd Msg )
 init ( key, state ) =
-    let
-        ( drawerModel, drawerCmd ) =
-            Drawer.init
-    in
     ( Model
         { basket = 0
         , globalState = state
         , navigationKey = key
-        , drawerModel = drawerModel
         }
     , state
-    , Core.join
-        [ ( DrawerMsg, drawerCmd ) ]
-        [ Core.guard NoOp <| Store.readUserIsActive state ]
+    , Core.guard NoOp <| Store.readUserIsActive state
     )
 
 
 type Msg
     = NoOp Bool
-    | DrawerMsg Drawer.Msg
 
 
 update : Msg -> Model -> ( Model, State, Cmd Msg )
@@ -54,11 +44,6 @@ update msg (Model ({ navigationKey, globalState } as model)) =
               else
                 redirectTo navigationKey "/login"
             )
-
-        DrawerMsg localMsg ->
-            Drawer.update localMsg model.drawerModel
-                |> Core.routine DrawerMsg (\innerModel -> { model | drawerModel = innerModel })
-                |> Core.pack Model globalState
 
 
 view : Model -> Html Msg

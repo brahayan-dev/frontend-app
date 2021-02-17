@@ -11,7 +11,6 @@ import Browser.Navigation exposing (Key)
 import Common.Components.Button as Button
 import Common.Components.Input as Input
 import Common.Components.Link as Link
-import Common.Core as Core
 import Html exposing (Html, section)
 import Html.Events as E
 import Http
@@ -24,7 +23,7 @@ type Model
     = Model
         { email : String
         , password : String
-        , isLoading : Bool
+        , buttonMode : String
         , globalState : State
         , navigationKey : Key
         }
@@ -35,7 +34,7 @@ init ( key, state ) =
     ( Model
         { email = ""
         , password = ""
-        , isLoading = False
+        , buttonMode = "ready"
         , globalState = state
         , navigationKey = key
         }
@@ -62,7 +61,7 @@ update msg (Model ({ globalState, navigationKey } as model)) =
             ( Model { model | password = value }, globalState, Cmd.none )
 
         MakeLogin ->
-            ( Model { model | isLoading = True }
+            ( Model { model | buttonMode = "loading" }
             , globalState
             , Http.get
                 { url = "https://jsonplaceholder.typicode.com/posts/1"
@@ -86,7 +85,7 @@ subscriptions _ =
 
 
 viewForm : Model -> Html Msg
-viewForm (Model { isLoading }) =
+viewForm (Model { buttonMode }) =
     section []
         [ "email"
             |> Input.default
@@ -98,7 +97,7 @@ viewForm (Model { isLoading }) =
             |> Input.toHtml [ E.onInput ChangePassword ]
         , "Iniciar sesión"
             |> Button.default
-            |> Core.when isLoading Button.setLoading
+            |> Button.setMode buttonMode
             |> Button.toHtml []
         , "Sign up"
             |> Link.default

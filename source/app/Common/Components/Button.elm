@@ -1,11 +1,11 @@
 module Common.Components.Button exposing
     ( Button
     , default
-    , setDisabled
-    , setLoading
+    , setMode
     , toHtml
     )
 
+import Dict
 import Html exposing (Attribute, Html, button, div, text)
 import Html.Attributes exposing (class)
 import Svg exposing (circle, svg)
@@ -17,13 +17,13 @@ type Button
 
 
 type alias Model =
-    { state : State
+    { mode : Mode
     , label : String
     , block : Bool
     }
 
 
-type State
+type Mode
     = Loading
     | Disabled
     | Ready
@@ -34,23 +34,28 @@ default label =
     Button
         { label = label
         , block = False
-        , state = Ready
+        , mode = Ready
         }
 
 
-setDisabled : Button -> Button
-setDisabled (Button model) =
-    Button { model | state = Disabled }
-
-
-setLoading : Button -> Button
-setLoading (Button model) =
-    Button { model | state = Loading }
+setMode : String -> Button -> Button
+setMode s (Button ({ mode } as model)) =
+    let
+        mode_ =
+            Dict.fromList
+                [ ( "loading", Loading )
+                , ( "disabled", Disabled )
+                , ( "ready", Ready )
+                ]
+                |> Dict.get s
+                |> Maybe.withDefault mode
+    in
+    Button { model | mode = mode_ }
 
 
 toHtml : List (Attribute msg) -> Button -> Html msg
-toHtml events (Button { state, label }) =
-    case state of
+toHtml events (Button { mode, label }) =
+    case mode of
         Ready ->
             button (List.append events [ class activeStyle ])
                 [ text label ]
