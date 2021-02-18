@@ -1,4 +1,4 @@
-module Common.Currency exposing (defineAsCOP, fromInt, toString)
+module Common.Helpers.Currency exposing (defineAsCOP, fromInt, toString)
 
 
 type Code

@@ -2,29 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer components {
-	.text-primary {
-		@apply text-green-800;
-	}
-
-	.text-secondary {
-		@apply text-yellow-600;
-	}
-
-	.bg-primary {
-		@apply bg-green-800;
-	}
-
-	.bg-secondary {
-		@apply bg-yellow-600;
-	}
-
-	.center {
-		@apply flex justify-center items-center;
-	}
-}
-
 @layer base {
+	.tx-red {
+		@apply text-red-400;
+	}
+
+	.tx-indigo {
+		@apply text-indigo-600;
+	}
+
+	.bg-red {
+		@apply bg-red-400;
+	}
+
+	.bg-indigo {
+		@apply bg-indigo-500;
+	}
+
 	body {
 		@apply font-mono;
 	}

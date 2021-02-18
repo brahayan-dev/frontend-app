@@ -1,122 +1,107 @@
 module Common.Components.Text exposing
-    ( addClasses
-    , default
-    , setCenter
-    , setJustify
-    , setLeft
-    , setRight
+    ( default
+    , setAddon
+    , setAlignment
+    , setKind
     , toHtml
     )
 
-import Html as H exposing (Html)
+import Dict
+import Html exposing (Html)
 import Html.Attributes as Att
-
-
-type Kind
-    = Title
-    | Subtitle
-
-
-type Alignment
-    = Center
-    | Justify
-    | Right
-    | Left
-
-
-type Tag
-    = H1
-    | H2
-    | H3
-    | H4
-    | H5
-    | H6
-    | Paragraph
-    | Help
-    | Error
 
 
 type Text
     = Text
-        { label : String
-        , isBlock : Bool
-        , kind : Kind
-        , alignment : Alignment
-        , tag : Tag
-        , classes : String
+        { isBlock : Bool
+        , alignment : String
+        , label : String
+        , addon : String
+        , kind : String
+        , tag : String
         }
 
 
 default : String -> Text
 default label =
     Text
-        { label = label
-        , kind = Title
+        { tag = "p"
+        , addon = ""
+        , kind = "title"
+        , alignment = "center"
         , isBlock = True
-        , tag = Paragraph
-        , alignment = Center
-        , classes = ""
+        , label = label
         }
 
 
-addClasses : String -> Text -> Text
-addClasses classes (Text model) =
-    let
-        addons =
-            if String.isEmpty model.classes then
-                model.classes
-
-            else
-                model.classes ++ " "
-    in
-    Text { model | classes = addons ++ classes }
+setAlignment : String -> Text -> Text
+setAlignment s (Text model) =
+    Text { model | alignment = s }
 
 
-setCenter : Text -> Text
-setCenter (Text model) =
-    Text { model | alignment = Center }
+setAddon : String -> Text -> Text
+setAddon s (Text model) =
+    Text { model | addon = s }
 
 
-setRight : Text -> Text
-setRight (Text model) =
-    Text { model | alignment = Right }
-
-
-setLeft : Text -> Text
-setLeft (Text model) =
-    Text { model | alignment = Left }
-
-
-setJustify : Text -> Text
-setJustify (Text model) =
-    Text { model | alignment = Justify }
+setKind : String -> Text -> Text
+setKind s (Text model) =
+    Text { model | kind = s }
 
 
 toHtml : Text -> Html msg
-toHtml (Text model) =
-    case model.tag of
-        _ ->
-            H.p
-                [ Att.classList
-                    [ ( "text-xs font-sans", True )
-                    , ( getClassOfAlignment model.alignment, True )
-                    , ( model.classes, True )
-                    ]
-                ]
-                [ H.text model.label ]
+toHtml (Text { kind, alignment, addon, tag, label }) =
+    getTag tag
+        [ Att.classList
+            [ ( "font-sans", True )
+            , ( getAlignment alignment, True )
+            , ( getKind kind, True )
+            , ( addon, True )
+            ]
+        ]
+        [ Html.text label ]
 
 
-getClassOfAlignment : Alignment -> String
-getClassOfAlignment alignment =
-    case alignment of
-        Center ->
-            "text-center"
+getTag : String -> List (Html.Attribute msg) -> List (Html msg) -> Html msg
+getTag s =
+    Dict.fromList
+        [ ( "h1", Html.h1 )
+        , ( "h2", Html.h2 )
+        , ( "h3", Html.h3 )
+        , ( "h4", Html.h4 )
+        , ( "h5", Html.h5 )
+        , ( "h6", Html.h6 )
+        , ( "p", Html.p )
+        , ( "span", Html.span )
+        ]
+        |> Dict.get s
+        |> Maybe.withDefault Html.span
 
-        Justify ->
-            "text-justify"
 
-        Right ->
-            "text-right"
+getAlignment : String -> String
+getAlignment s =
+    Dict.fromList
+        [ ( "center", "text-center" )
+        , ( "justify", "text-justify" )
+        , ( "right", "text-right" )
+        , ( "left", "text-left" )
+        ]
+        |> Dict.get s
+        |> Maybe.withDefault "text-center"
 
-        Left ->
-            "text-left"
+
+getKind : String -> String
+getKind s =
+    let
+        defaultStyle =
+            "text-lg font-normal"
+    in
+    Dict.fromList
+        [ ( "title", "text-4xl font-bold" )
+        , ( "subtitle", "text-3xl font-medium" )
+        , ( "error", "text-xs font-light text-red-400" )
+        , ( "help", "text-xs font-light" )
+        , ( "basic", defaultStyle )
+        ]
+        |> Dict.get s
+        |> Maybe.withDefault defaultStyle

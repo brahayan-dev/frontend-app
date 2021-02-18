@@ -8,7 +8,7 @@ module Retail.Widgets.Cabinet exposing
 import Common.Components.Button as Button
 import Common.Components.Card as Card
 import Common.Components.Text as Text
-import Common.Currency as Currency
+import Common.Helpers.Currency as Currency
 import Html exposing (Html, img, section)
 import Html.Attributes as Att
 import List exposing (product)
@@ -74,8 +74,8 @@ createProduct product =
             [ img [ Att.src product.imageUrl ] []
             , product.description
                 |> Text.default
-                |> Text.setCenter
-                |> Text.addClasses "m-4"
+                |> Text.setAlignment "center"
+                |> Text.setAddon "m-4"
                 |> Text.toHtml
             , product.price
                 |> Currency.fromInt
